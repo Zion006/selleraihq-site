@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../../src/layouts/BaseLayout.astro';
+const categories = [
+  {
+    title: 'Listing and SEO tools',
+    text: 'For titles, descriptions, keywords, bullet points, and listing optimization.'
+  },
+  {
+    title: 'Image and mockup tools',
+    text: 'For product visuals, mockups, cleanup, lifestyle scenes, and presentation.'
+  },
+  {
+    title: 'Content and marketing tools',
+    text: 'For posts, emails, short-form content, and lightweight growth workflows.'
+  }
+];
+---
+<BaseLayout title="AI tool categories for sellers" description="Core AI tool categories for marketplace sellers, ecommerce founders, and product creators.">
+  <section class="section">
+    <h1 style="font-size:52px; margin-bottom:12px;">Core tool categories for sellers</h1>
+    <p class="top">We are starting with a tight set of categories that matter most for product-based businesses.</p>
+    <div class="grid-3">
+      {categories.map((item) => (
+        <div class="card">
+          <div class="pill">Category</div>
+          <h3>{item.title}</h3>
+          <p class="mini">{item.text}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

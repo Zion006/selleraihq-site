@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../../src/layouts/BaseLayout.astro';
+const guides = [
+  'Best AI tools for sellers in 2026',
+  'Starter AI stack under a small budget',
+  'How to use AI for listings without sounding robotic',
+  'AI image workflow for product sellers',
+  'Content workflow for solo ecommerce brands'
+];
+---
+<BaseLayout title="Guides for AI-powered sellers" description="Guides, workflows, and practical playbooks for sellers using AI.">
+  <section class="section">
+    <div class="card">
+      <div class="pill">Guides</div>
+      <h1 style="font-size:52px; margin-bottom:12px;">Practical guides for lean AI-powered selling</h1>
+      <p class="top">These are the first content lanes we are building around, focused on search intent and actual buyer usefulness.</p>
+      <ul class="clean">
+        {guides.map((guide) => <li>{guide}</li>)}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
