@@ -1,5 +1,6 @@
 ---
 const { title = 'Seller AI HQ', description = 'AI tools, workflows, and practical guides for online sellers.' } = Astro.props;
+const canonicalURL = Astro.url;
 ---
 <!doctype html>
 <html lang="en">
@@ -9,6 +10,23 @@ const { title = 'Seller AI HQ', description = 'AI tools, workflows, and practica
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Favicon (emoji, no file needed) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
+
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content={canonicalURL} />
+    <meta property="og:title"       content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name"   content="SellerAIHQ" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:site"        content="@selleraihq" />
+    <meta name="twitter:title"       content={title} />
+    <meta name="twitter:description" content={description} />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -42,8 +60,16 @@ const { title = 'Seller AI HQ', description = 'AI tools, workflows, and practica
         color: var(--text);
         line-height: 1.55;
       }
+
+      /* ── CURSOR ── */
+      a, button, [role="button"],
+      .btn, .btn-glow, .btn-ghost, .btn-sm, .btn-tool,
+      .tool-btn, .navcta, .hamburger { cursor: pointer; }
+
       a { color: inherit; text-decoration: none; }
       .wrap { width: min(100% - 32px, var(--max)); margin: 0 auto; }
+
+      /* ── NAV ── */
       .nav {
         display: flex; align-items: center; justify-content: space-between;
         padding: 20px 0;
@@ -55,13 +81,37 @@ const { title = 'Seller AI HQ', description = 'AI tools, workflows, and practica
         display: inline-flex; gap: 2px; align-items: center;
       }
       .brand span { color: var(--accent); }
-      .navlinks { display: flex; gap: 18px; color: var(--muted); font-size: 14px; align-items: center; }
+      .navlinks {
+        display: flex; gap: 18px; color: var(--muted); font-size: 14px; align-items: center;
+      }
+      .navlinks a {
+        transition: color .2s ease;
+      }
       .navlinks a:hover { color: var(--text); }
       .navcta {
         padding: 10px 14px; border-radius: 12px;
         background: rgba(110,168,255,0.12); border: 1px solid var(--border);
         color: #dce7ff;
+        transition: background .2s ease;
       }
+      .navcta:hover { background: rgba(110,168,255,0.2); }
+
+      /* ── HAMBURGER ── */
+      .hamburger {
+        display: none;
+        flex-direction: column; gap: 5px;
+        background: none; border: none; padding: 4px;
+      }
+      .hamburger span {
+        display: block; width: 22px; height: 2px;
+        background: var(--text); border-radius: 2px;
+        transition: transform .2s ease, opacity .2s ease;
+      }
+      .nav.nav-open .hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+      .nav.nav-open .hamburger span:nth-child(2) { opacity: 0; }
+      .nav.nav-open .hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+      /* ── COMMON COMPONENTS ── */
       .card {
         background: var(--panel);
         border: 1px solid var(--border);
@@ -120,18 +170,49 @@ const { title = 'Seller AI HQ', description = 'AI tools, workflows, and practica
         background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
         height: 1px; opacity: 0.5; margin: 10px 0 0;
       }
-      footer { padding: 40px 0 60px; color: var(--muted); font-size: 14px; }
+
+      /* ── FOOTER ── */
+      footer {
+        padding: 40px 0 60px; color: var(--muted); font-size: 14px;
+        border-top: 1px solid var(--border); margin-top: 24px;
+      }
+      .footer-inner {
+        display: flex; align-items: flex-start; justify-content: space-between;
+        gap: 24px; flex-wrap: wrap;
+      }
+      .footer-brand { font-weight: 800; font-size: 16px; color: var(--text); margin-bottom: 6px; }
+      .footer-brand span { color: var(--accent); }
+      .footer-links { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 8px; }
+      .footer-links a { color: var(--muted); transition: color .2s; font-size: 13px; }
+      .footer-links a:hover { color: var(--text); }
+      .footer-copy { font-size: 12px; color: rgba(157,171,207,.5); margin-top: 16px; }
+
+      /* ── RESPONSIVE ── */
       @media (max-width: 980px) {
         .hero-grid, .grid-3, .grid-2, .trust { grid-template-columns: 1fr; }
-        .navlinks { display: none; }
+        .navlinks {
+          display: none;
+          position: absolute; top: 100%; left: 0; right: 0;
+          flex-direction: column; align-items: flex-start; gap: 0;
+          background: rgba(7,11,23,.97);
+          border-bottom: 1px solid var(--border);
+          padding: 12px 16px 20px;
+          backdrop-filter: blur(20px);
+        }
+        .navlinks a { padding: 10px 4px; width: 100%; border-bottom: 1px solid var(--border); }
+        .navlinks a:last-child { border-bottom: none; }
+        .nav.nav-open .navlinks { display: flex; }
+        .hamburger { display: flex; }
+        .nav { position: relative; }
+        .footer-inner { flex-direction: column; gap: 12px; }
       }
     </style>
   </head>
   <body>
     <div class="wrap">
-      <header class="nav">
-        <div class="brand">Seller<span>AI</span>HQ</div>
-        <nav class="navlinks">
+      <header class="nav" id="main-nav">
+        <a class="brand" href="/">Seller<span>AI</span>HQ</a>
+        <nav class="navlinks" id="navlinks">
           <a href="/tools">Tools</a>
           <a href="/guides">Guides</a>
           <a href="/fba-audit" style="color:var(--accent-3)">FBA Audit</a>
@@ -139,12 +220,44 @@ const { title = 'Seller AI HQ', description = 'AI tools, workflows, and practica
           <a href="/contact">Contact</a>
           <a class="navcta" href="https://x.com/selleraihq" target="_blank" rel="noreferrer">Follow on X</a>
         </nav>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
       </header>
       <slot />
       <footer>
-        <div>SellerAIHQ.com, practical AI for sellers.</div>
-        <div class="mini" style="margin-top:8px;">Focused on useful AI stacks, workflows, and scalable seller infrastructure.</div>
+        <div class="footer-inner">
+          <div>
+            <div class="footer-brand">Seller<span>AI</span>HQ</div>
+            <div style="font-size:13px">Focused AI tools for Amazon FBA sellers.</div>
+            <div class="footer-links">
+              <a href="/tools">Tools</a>
+              <a href="/fba-audit">FBA Audit</a>
+              <a href="/guides">Guides</a>
+              <a href="/about">About</a>
+              <a href="/contact">Contact</a>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <a href="https://x.com/selleraihq" target="_blank" rel="noreferrer"
+               style="color:var(--muted);font-size:13px;transition:color .2s">
+              @selleraihq on X →
+            </a>
+          </div>
+        </div>
+        <div class="footer-copy">© 2025 SellerAIHQ · Not affiliated with Amazon.com, Inc.</div>
       </footer>
     </div>
+    <script>
+      const nav = document.getElementById('main-nav');
+      const btn = document.getElementById('hamburger');
+      if (btn) {
+        btn.addEventListener('click', () => nav.classList.toggle('nav-open'));
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+          if (!nav.contains(e.target)) nav.classList.remove('nav-open');
+        });
+      }
+    </script>
   </body>
 </html>
