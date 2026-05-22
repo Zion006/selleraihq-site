@@ -10,6 +10,7 @@
     "preview": "astro preview"
   },
   "dependencies": {
+    "@astrojs/vercel": "^7.8.2",
     "astro": "^4.16.18"
   }
 }
