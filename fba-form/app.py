@@ -1,22 +1,15 @@
 #!/usr/bin/env python3
 """
 FBA Audit — Intake Form
-------------------------
-Клиент заполняет форму, загружает файлы.
-Сервер отправляет письмо с файлами на zionbot@agentmail.to через AgentMail API.
-
-Локальный запуск:
-    cd /home/admin1/fba-audit/intake_form
-    ../parser/venv/bin/python app.py
-
-Переменные окружения (Railway):
-    AGENTMAIL_API_KEY   — API ключ AgentMail
-    AGENTMAIL_INBOX_ID  — inbox (default: zionbot@agentmail.to)
+Env vars (Railway):
+    AGENTMAIL_API_KEY   — AgentMail API key
+    AGENTMAIL_INBOX_ID  — inbox address (default: zionbot@agentmail.to)
 """
 
 import os
-import sys
 import json
+import shutil
+from datetime import datetime
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
@@ -25,29 +18,20 @@ app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024  # 50 MB
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-
-def load_config():
-    """Читает конфиг из env (Railway) или локального config.json."""
-    api_key  = os.environ.get("AGENTMAIL_API_KEY")
-    inbox_id = os.environ.get("AGENTMAIL_INBOX_ID", "zionbot@agentmail.to")
-
-    if api_key:
-        return {"api_key": api_key, "inbox_id": inbox_id}
-
-    # Локальный запуск — читаем config.json
-    config_path = os.path.join(os.path.dirname(__file__), "../parser/config.json")
-    if os.path.exists(config_path):
-        with open(config_path) as f:
-            return json.load(f)
-
-    raise RuntimeError("Нет AGENTMAIL_API_KEY в env и нет config.json")
-
 ALLOWED_EXTENSIONS = {".csv", ".xlsx", ".xls", ".txt", ".tsv", ".pdf"}
 
 
 def load_config():
-    with open(CONFIG_PATH, "r") as f:
-        return json.load(f)
+    """Read config from env vars (Railway) or fallback to local config.json."""
+    api_key  = os.environ.get("AGENTMAIL_API_KEY")
+    inbox_id = os.environ.get("AGENTMAIL_INBOX_ID", "zionbot@agentmail.to")
+    if api_key:
+        return {"api_key": api_key, "inbox_id": inbox_id}
+    config_path = os.path.join(os.path.dirname(__file__), "../parser/config.json")
+    if os.path.exists(config_path):
+        with open(config_path) as f:
+            return json.load(f)
+    raise RuntimeError("No AGENTMAIL_API_KEY in env and no config.json found")
 
 
 def allowed_file(filename):
@@ -55,14 +39,11 @@ def allowed_file(filename):
 
 
 def send_to_agentmail(config, client_name, store_name, sender_email, form_data, files):
-    """Отправляет письмо с файлами на inbox агента через AgentMail API."""
     try:
         from agentmail import AgentMail
         client = AgentMail(api_key=config["api_key"])
 
         subject = f"Audit: {store_name}"
-
-        # Тело письма — intake данные
         body = f"""New FBA Audit Intake Form Submission
 
 Name:          {form_data.get('name')}
@@ -83,17 +64,13 @@ Notes:
 
 --- Files attached: {len(files)} ---
 """
-
-        # Отправить через AgentMail
-        # AgentMail send API: client.inboxes.messages.send(...)
         msg_params = {
             "inbox_id": config["inbox_id"],
-            "to":       [config["inbox_id"]],   # сами себе — email_watcher подхватит
+            "to":       [config["inbox_id"]],
             "subject":  subject,
             "text":     body,
         }
 
-        # Прикрепить файлы если API поддерживает
         if files:
             attachments = []
             for filepath, filename in files:
@@ -106,13 +83,10 @@ Notes:
                 })
             msg_params["attachments"] = attachments
 
-        # Попробовать отправить
         try:
             client.inboxes.messages.send(**msg_params)
             return True, None
         except TypeError:
-            # Если send() не принимает attachments — отправляем без них,
-            # файлы уже сохранены локально
             del msg_params["attachments"]
             client.inboxes.messages.send(**msg_params)
             return True, "files_local_only"
@@ -122,9 +96,7 @@ Notes:
 
 
 def save_submission_log(form_data, files, status):
-    """Сохраняет лог submission в JSON."""
     log_path = os.path.join(os.path.dirname(__file__), "submissions.jsonl")
-    from datetime import datetime
     entry = {
         "ts":       datetime.now().isoformat(),
         "name":     form_data.get("name"),
@@ -151,16 +123,14 @@ def form():
 def submit():
     form_data = request.form.to_dict()
 
-    # Валидация обязательных полей
     required = ["name", "email", "store_name", "marketplace", "gmv",
                 "has_reimbursements", "has_invoices"]
     for field in required:
         if not form_data.get(field):
             return render_template("form.html",
-                error=f"Please fill in all required fields.",
+                error="Please fill in all required fields.",
                 form=form_data)
 
-    # Проверить файл reimbursements
     reimb_file = request.files.get("reimb_file")
     if not reimb_file or reimb_file.filename == "":
         return render_template("form.html",
@@ -172,11 +142,8 @@ def submit():
             error="Reimbursement report must be CSV or Excel format.",
             form=form_data)
 
-    # Сохранить файлы локально
     saved_files = []
     store_safe = "".join(c for c in form_data["store_name"] if c.isalnum() or c in "_-")[:30]
-
-    from datetime import datetime
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     reimb_fname = f"{store_safe}_{ts}_reimbursements{os.path.splitext(reimb_file.filename)[1]}"
@@ -193,14 +160,6 @@ def submit():
             inv_file.save(inv_path)
             saved_files.append((inv_path, inv_fname))
 
-    # Скопировать в parser/drop/ для немедленной обработки
-    parser_drop = os.path.join(os.path.dirname(__file__), "../parser/drop")
-    os.makedirs(parser_drop, exist_ok=True)
-    import shutil
-    for filepath, filename in saved_files:
-        shutil.copy2(filepath, os.path.join(parser_drop, filename))
-
-    # Отправить на AgentMail
     config = load_config()
     ok, err = send_to_agentmail(
         config,
@@ -215,8 +174,6 @@ def submit():
     save_submission_log(form_data, saved_files, status)
 
     if not ok and err != "files_local_only":
-        # Файлы уже в drop/ — аудит всё равно запустится
-        # просто логируем ошибку AgentMail
         app.logger.warning(f"AgentMail send error: {err}")
 
     return render_template("thank_you.html",
@@ -228,7 +185,6 @@ def submit():
 
 @app.route("/submissions")
 def submissions():
-    """Простой список последних submissions (только для admin)."""
     log_path = os.path.join(os.path.dirname(__file__), "submissions.jsonl")
     entries = []
     if os.path.exists(log_path):
@@ -239,10 +195,13 @@ def submissions():
                 except Exception:
                     pass
     entries.reverse()
-    html = "<h2 style='font-family:sans-serif;padding:20px'>Submissions</h2><table border=1 cellpadding=8 style='font-family:sans-serif;font-size:13px'>"
-    html += "<tr><th>Time</th><th>Name</th><th>Store</th><th>Email</th><th>GMV</th><th>Invoices</th><th>Files</th><th>Status</th></tr>"
+    html = "<h2 style='font-family:sans-serif;padding:20px'>Submissions</h2>"
+    html += "<table border=1 cellpadding=8 style='font-family:sans-serif;font-size:13px'>"
+    html += "<tr><th>Time</th><th>Name</th><th>Store</th><th>Email</th><th>GMV</th><th>Files</th><th>Status</th></tr>"
     for e in entries:
-        html += f"<tr><td>{e['ts'][:16]}</td><td>{e['name']}</td><td>{e['store']}</td><td>{e['email']}</td><td>{e['gmv']}</td><td>{e['invoices']}</td><td>{', '.join(e['files'])}</td><td>{e['status']}</td></tr>"
+        html += (f"<tr><td>{e['ts'][:16]}</td><td>{e['name']}</td><td>{e['store']}</td>"
+                 f"<td>{e['email']}</td><td>{e['gmv']}</td>"
+                 f"<td>{', '.join(e['files'])}</td><td>{e['status']}</td></tr>")
     html += "</table>"
     return html
 
