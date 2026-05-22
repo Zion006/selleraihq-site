@@ -1,32 +1,146 @@
 ---
-import BaseLayout from '../../../src/layouts/BaseLayout.astro';
-const categories = [
-  {
-    title: 'Listing and SEO tools',
-    text: 'For titles, descriptions, keywords, bullet points, and listing optimization.'
-  },
-  {
-    title: 'Image and mockup tools',
-    text: 'For product visuals, mockups, cleanup, lifestyle scenes, and presentation.'
-  },
-  {
-    title: 'Content and marketing tools',
-    text: 'For posts, emails, short-form content, and lightweight growth workflows.'
-  }
-];
+import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
-<BaseLayout title="AI tool categories for sellers" description="Core AI tool categories for marketplace sellers, ecommerce founders, and product creators.">
-  <section class="section">
-    <h1 style="font-size:52px; margin-bottom:12px;">Core tool categories for sellers</h1>
-    <p class="top">We are starting with a tight set of categories that matter most for product-based businesses.</p>
-    <div class="grid-3">
-      {categories.map((item) => (
-        <div class="card">
-          <div class="pill">Category</div>
-          <h3>{item.title}</h3>
-          <p class="mini">{item.text}</p>
-        </div>
-      ))}
+<BaseLayout
+  title="FBA Tools — SellerAIHQ"
+  description="AI tools for Amazon FBA sellers. Reimbursement audits, fee checkers, listing audits, PPC waste finders. Each tool targets one revenue leak."
+>
+<style>
+  .tools-hero { padding: 52px 0 28px; }
+  .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+
+  .tool-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 22px; padding: 26px;
+    transition: border-color 0.2s, transform 0.15s;
+    display: flex; flex-direction: column;
+  }
+  .tool-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .tool-card.live { border-color: rgba(110,168,255,0.25); }
+
+  .tool-icon { font-size: 32px; margin-bottom: 14px; }
+  .tool-card h3 { font-size: 18px; margin-bottom: 6px; }
+  .tool-card p  { font-size: 13px; color: var(--muted); line-height: 1.55;
+                  margin-bottom: 16px; flex: 1; }
+
+  .tool-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .tag { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+         padding: 4px 9px; border-radius: 999px; }
+  .tag-free   { background: rgba(41,211,161,0.1); color: var(--accent-3);
+                border: 1px solid rgba(41,211,161,0.2); }
+  .tag-paid   { background: rgba(110,168,255,0.1); color: var(--accent);
+                border: 1px solid rgba(110,168,255,0.2); }
+  .tag-soon   { background: rgba(255,255,255,0.04); color: var(--muted);
+                border: 1px solid var(--border); }
+
+  .live-dot {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10px; font-weight: 700; color: var(--accent-3);
+    margin-bottom: 10px;
+  }
+  .live-dot::before {
+    content: ''; display: block; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent-3);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 2px rgba(41,211,161,0.3); }
+    50% { box-shadow: 0 0 0 5px rgba(41,211,161,0.1); }
+  }
+
+  .btn-tool {
+    display: block; text-align: center; padding: 11px 16px;
+    border-radius: 12px; font-size: 13px; font-weight: 700;
+    transition: opacity 0.15s;
+  }
+  .btn-tool.primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white;
+  }
+  .btn-tool.secondary {
+    background: rgba(255,255,255,0.04); color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-tool:hover { opacity: 0.8; }
+
+  @media (max-width: 980px) { .tools-grid { grid-template-columns: 1fr; } }
+</style>
+
+<section class="tools-hero">
+  <div class="pill">All tools</div>
+  <h1 style="font-size:clamp(36px,6vw,62px);margin:10px 0 12px">Every tool targets<br>one revenue leak.</h1>
+  <p class="lead">We don't build dashboards. We build focused audits that find specific money FBA sellers are losing and show you exactly what to do about it.</p>
+</section>
+
+<div class="tools-grid">
+
+  <!-- 1. FBA Reimbursement Audit — LIVE -->
+  <div class="tool-card live">
+    <div class="tool-icon">🔍</div>
+    <div class="live-dot">Live now</div>
+    <h3>FBA Reimbursement Audit</h3>
+    <div class="tool-meta">
+      <span class="tag tag-free">Free diagnostic</span>
+      <span class="tag tag-paid">$299 full audit</span>
     </div>
-  </section>
+    <p>Amazon may have underpaid your lost/damaged inventory reimbursements after the March 2025 policy change. We compare Amazon's payout against your invoice-backed sourcing cost, calculate the delta, and prepare the evidence pack to dispute it — within the 60-day window.</p>
+    <a class="btn-tool primary" href="/fba-audit">Run free diagnostic →</a>
+  </div>
+
+  <!-- 2. Sourcing Cost Uploader — SOON -->
+  <div class="tool-card">
+    <div class="tool-icon">📦</div>
+    <h3>Sourcing Cost Uploader</h3>
+    <div class="tool-meta"><span class="tag tag-soon">Coming soon</span></div>
+    <p>Bulk-upload your FNSKU sourcing costs to Manage Your Sourcing Cost before the next reimbursement event. Works directly from your invoice CSV. Prevents underpayments at the source rather than chasing them after the fact.</p>
+    <a class="btn-tool secondary" href="mailto:zionbot@agentmail.to?subject=Waitlist: Sourcing Cost Uploader">Join waitlist →</a>
+  </div>
+
+  <!-- 3. FBA Fee Checker — SOON -->
+  <div class="tool-card">
+    <div class="tool-icon">💰</div>
+    <h3>FBA Fee Checker</h3>
+    <div class="tool-meta"><span class="tag tag-soon">Coming soon</span></div>
+    <p>Amazon charges FBA fees based on product dimensions and weight categories. Misclassified products can cost $0.30–$2.00 extra per unit. We check every active FNSKU against your actual measurements and flag overcharged SKUs.</p>
+    <a class="btn-tool secondary" href="mailto:zionbot@agentmail.to?subject=Waitlist: FBA Fee Checker">Join waitlist →</a>
+  </div>
+
+  <!-- 4. Listing Audit — SOON -->
+  <div class="tool-card">
+    <div class="tool-icon">📋</div>
+    <h3>Listing Audit</h3>
+    <div class="tool-meta"><span class="tag tag-soon">Coming soon</span></div>
+    <p>Scans your active listings for suppression risks, keyword gaps, content score issues, and policy flags. Flags problems before Amazon acts on them. Includes fix recommendations per listing.</p>
+    <a class="btn-tool secondary" href="mailto:zionbot@agentmail.to?subject=Waitlist: Listing Audit">Join waitlist →</a>
+  </div>
+
+  <!-- 5. PPC Waste Finder — SOON -->
+  <div class="tool-card">
+    <div class="tool-icon">🏷️</div>
+    <h3>PPC Waste Finder</h3>
+    <div class="tool-meta"><span class="tag tag-soon">Coming soon</span></div>
+    <p>Upload your Sponsored Products bulk file. We identify search terms bleeding spend with zero or negative ROAS, cannibalizing ad groups, and bids that haven't converted in 90+ days. Ready-to-import negatives list included.</p>
+    <a class="btn-tool secondary" href="mailto:zionbot@agentmail.to?subject=Waitlist: PPC Waste Finder">Join waitlist →</a>
+  </div>
+
+  <!-- 6. Return Rate Analyzer — SOON -->
+  <div class="tool-card">
+    <div class="tool-icon">🔄</div>
+    <h3>Return Rate Analyzer</h3>
+    <div class="tool-meta"><span class="tag tag-soon">Coming soon</span></div>
+    <p>Maps your return reasons by ASIN to listing issues, product defects, or fulfillment problems. Identifies which SKUs are at risk of Amazon's high-return-rate suppression and what to fix first.</p>
+    <a class="btn-tool secondary" href="mailto:zionbot@agentmail.to?subject=Waitlist: Return Rate Analyzer">Join waitlist →</a>
+  </div>
+
+</div>
+
+<!-- Bottom CTA -->
+<section class="section" style="padding-bottom:64px">
+  <div class="card" style="text-align:center;padding:36px;margin-top:20px">
+    <div class="pill" style="justify-content:center;margin-bottom:12px">Start now</div>
+    <h2 style="font-size:28px;margin-bottom:10px">The first tool is live and free to try</h2>
+    <p class="top" style="max-width:460px;margin:0 auto 24px">Run a free diagnostic on your last 10 FBA reimbursements. Takes 5 minutes to submit, results in 24–48 hours.</p>
+    <a class="btn primary" href="/fba-audit">Start FBA Reimbursement Audit →</a>
+  </div>
+</section>
+
 </BaseLayout>
