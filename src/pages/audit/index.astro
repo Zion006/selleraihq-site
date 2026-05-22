@@ -1,0 +1,310 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+<BaseLayout
+  title="Free FBA Reimbursement Diagnostic — SellerAIHQ"
+  description="Upload your FBA Reimbursement Report and supplier invoices. We check your last 10 reimbursements and tell you if Amazon underpaid you — free in 24–48h."
+>
+<style>
+  .form-hero { padding: 52px 0 16px; text-align: center; }
+  .form-hero h1 { font-size: clamp(32px,5vw,54px); margin-bottom: 12px; }
+  .form-hero p  { color: var(--muted); font-size: 17px; max-width: 540px; margin: 0 auto 32px; }
+
+  .form-wrap {
+    max-width: 680px; margin: 0 auto 80px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 28px; padding: 36px;
+  }
+
+  .form-section { margin-bottom: 28px; }
+  .form-section-title {
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--accent); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .form-section-title::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block; font-size: 13px; font-weight: 600;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .field label .req { color: var(--accent-3); margin-left: 2px; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 11px 14px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: 12px; color: var(--text); font-size: 14px; font-family: inherit;
+    transition: border-color .2s;
+    appearance: none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: rgba(110,168,255,.5);
+  }
+  .field select option { background: #0d1428; }
+  .field textarea { resize: vertical; min-height: 80px; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .radio-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .radio-opt { display: flex; align-items: center; gap: 8px;
+               padding: 10px 14px; border-radius: 10px;
+               background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+               cursor: pointer; transition: border-color .15s; }
+  .radio-opt:has(input:checked) { border-color: rgba(110,168,255,.4); background: rgba(110,168,255,.07); }
+  .radio-opt input { accent-color: var(--accent); width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; }
+  .radio-opt span { font-size: 13px; }
+
+  .upload-box {
+    border: 2px dashed var(--border); border-radius: 14px; padding: 20px;
+    text-align: center; cursor: pointer; transition: border-color .2s;
+    position: relative;
+  }
+  .upload-box:hover, .upload-box.dragover { border-color: rgba(110,168,255,.5); }
+  .upload-box input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .upload-icon { font-size: 28px; margin-bottom: 8px; }
+  .upload-label { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .upload-sub { font-size: 12px; color: var(--muted); }
+  .upload-files-list { margin-top: 10px; font-size: 12px; color: var(--accent-3); text-align: left; }
+
+  .error-bar {
+    background: rgba(255,68,68,.1); border: 1px solid rgba(255,68,68,.25);
+    border-radius: 12px; padding: 12px 16px; font-size: 13px; color: #ffb3b3;
+    margin-bottom: 20px; display: none;
+  }
+  .error-bar.show { display: block; }
+
+  .urgency-note {
+    background: rgba(255,68,68,.07); border: 1px solid rgba(255,68,68,.15);
+    border-radius: 12px; padding: 12px 16px; font-size: 13px; color: #ff9999;
+    margin-bottom: 24px; text-align: center;
+  }
+
+  .submit-btn {
+    width: 100%; padding: 15px; border-radius: 14px; font-size: 15px; font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white;
+    border: none; cursor: pointer; transition: opacity .15s, transform .15s;
+  }
+  .submit-btn:hover { opacity: .88; transform: translateY(-1px); }
+  .submit-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+  .submit-note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 10px; }
+
+  @media(max-width:600px){
+    .field-row, .radio-group { grid-template-columns: 1fr; }
+    .form-wrap { padding: 24px 18px; }
+  }
+</style>
+
+<section class="form-hero">
+  <div class="pill" style="justify-content:center;margin-bottom:14px">Free diagnostic</div>
+  <h1>FBA Reimbursement Diagnostic</h1>
+  <p>Upload your reimbursement report and invoices. We check if Amazon underpaid you — free, results in 24–48h.</p>
+</section>
+
+<div class="form-wrap">
+  <div class="urgency-note">⚠ Each reimbursement has a 60-day dispute window. Older cases expire daily.</div>
+
+  <div id="error-bar" class="error-bar"></div>
+
+  <form id="audit-form" method="POST" action="/api/submit-audit" enctype="multipart/form-data">
+
+    <!-- Section 1: Contact -->
+    <div class="form-section">
+      <div class="form-section-title">Your details</div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Full name <span class="req">*</span></label>
+          <input type="text" name="name" placeholder="Jane Smith" required />
+        </div>
+        <div class="field">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" name="email" placeholder="jane@store.com" required />
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Store / brand name <span class="req">*</span></label>
+          <input type="text" name="store_name" placeholder="My Brand" required />
+        </div>
+        <div class="field">
+          <label>Primary marketplace <span class="req">*</span></label>
+          <select name="marketplace" required>
+            <option value="" disabled selected>Select…</option>
+            <option value="US">Amazon US</option>
+            <option value="UK">Amazon UK</option>
+            <option value="EU">Amazon EU</option>
+            <option value="CA">Amazon CA</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Account info -->
+    <div class="form-section">
+      <div class="form-section-title">Account details</div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Monthly revenue (GMV) <span class="req">*</span></label>
+          <select name="gmv" required>
+            <option value="" disabled selected>Select range…</option>
+            <option value="10k-30k">$10k – $30k</option>
+            <option value="30k-100k">$30k – $100k</option>
+            <option value="100k-300k">$100k – $300k</option>
+            <option value="300k+">$300k+</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Active SKU count</label>
+          <select name="sku_count">
+            <option value="" disabled selected>Select…</option>
+            <option value="1-10">1–10</option>
+            <option value="11-50">11–50</option>
+            <option value="51-200">51–200</option>
+            <option value="200+">200+</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Selling model</label>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="model" value="Private label" /><span>Private label</span></label>
+          <label class="radio-opt"><input type="radio" name="model" value="Wholesale" /><span>Wholesale</span></label>
+          <label class="radio-opt"><input type="radio" name="model" value="Brand owner" /><span>Brand owner</span></label>
+          <label class="radio-opt"><input type="radio" name="model" value="Other" /><span>Other</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Reimbursement context -->
+    <div class="form-section">
+      <div class="form-section-title">Reimbursement history</div>
+
+      <div class="field">
+        <label>Have you received FBA lost/damaged reimbursements since March 31, 2025? <span class="req">*</span></label>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="has_reimbursements" value="Yes" required /><span>Yes</span></label>
+          <label class="radio-opt"><input type="radio" name="has_reimbursements" value="No" /><span>No</span></label>
+          <label class="radio-opt"><input type="radio" name="has_reimbursements" value="Not sure" /><span>Not sure</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Did you upload sourcing costs to "Manage Your Sourcing Cost" before March 2025?</label>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="sourcing_uploaded" value="Yes" /><span>Yes</span></label>
+          <label class="radio-opt"><input type="radio" name="sourcing_uploaded" value="No" /><span>No</span></label>
+          <label class="radio-opt"><input type="radio" name="sourcing_uploaded" value="Some SKUs" /><span>Some SKUs</span></label>
+          <label class="radio-opt"><input type="radio" name="sourcing_uploaded" value="Not sure" /><span>Not sure</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Did any reimbursement amounts look lower than your actual cost? <span class="req">*</span></label>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="looks_low" value="Yes" required /><span>Yes</span></label>
+          <label class="radio-opt"><input type="radio" name="looks_low" value="No" /><span>No</span></label>
+          <label class="radio-opt"><input type="radio" name="looks_low" value="Not sure" /><span>Not sure</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Do you have supplier invoices showing unit cost per SKU? <span class="req">*</span></label>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="has_invoices" value="Yes" required /><span>Yes</span></label>
+          <label class="radio-opt"><input type="radio" name="has_invoices" value="No" /><span>No</span></label>
+          <label class="radio-opt"><input type="radio" name="has_invoices" value="Some SKUs" /><span>Some SKUs</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Files -->
+    <div class="form-section">
+      <div class="form-section-title">File uploads</div>
+
+      <div class="field">
+        <label>FBA Reimbursement Report <span class="req">*</span></label>
+        <div class="upload-box" id="reimb-box">
+          <input type="file" name="reimb_file" id="reimb-input" accept=".csv,.xlsx,.xls,.txt,.tsv" required />
+          <div class="upload-icon">📄</div>
+          <div class="upload-label">Click or drag to upload</div>
+          <div class="upload-sub">Seller Central → Reports → Fulfillment → Reimbursements · CSV or Excel</div>
+          <div class="upload-files-list" id="reimb-list"></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Supplier invoices with unit cost</label>
+        <div class="upload-box" id="inv-box">
+          <input type="file" name="invoice_files" id="inv-input" accept=".csv,.xlsx,.xls,.pdf,.txt" multiple />
+          <div class="upload-icon">📦</div>
+          <div class="upload-label">Click or drag to upload (multiple files OK)</div>
+          <div class="upload-sub">CSV, Excel or PDF showing FNSKU / SKU and unit cost</div>
+          <div class="upload-files-list" id="inv-list"></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Additional notes</label>
+        <textarea name="notes" placeholder="Anything else we should know — specific SKUs, unusual situations, etc."></textarea>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-btn">
+      Submit Free Diagnostic →
+    </button>
+    <p class="submit-note">Your files are used only for this audit · Results in 24–48h by email</p>
+
+  </form>
+</div>
+
+<script>
+  // File name display
+  function bindFileDisplay(inputId, listId) {
+    const input = document.getElementById(inputId);
+    const list  = document.getElementById(listId);
+    input.addEventListener('change', () => {
+      list.innerHTML = Array.from(input.files)
+        .map(f => `✓ ${f.name}`)
+        .join('<br>');
+    });
+  }
+  bindFileDisplay('reimb-input', 'reimb-list');
+  bindFileDisplay('inv-input', 'inv-list');
+
+  // Drag-over highlight
+  ['reimb-box','inv-box'].forEach(id => {
+    const box = document.getElementById(id);
+    box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('dragover'); });
+    box.addEventListener('dragleave', () => box.classList.remove('dragover'));
+    box.addEventListener('drop', () => box.classList.remove('dragover'));
+  });
+
+  // Error from query param
+  const params = new URLSearchParams(window.location.search);
+  const err = params.get('error');
+  if (err) {
+    const bar = document.getElementById('error-bar');
+    bar.textContent = err === 'fields' ? 'Please fill in all required fields.'
+      : err === 'file'   ? 'Please upload your FBA Reimbursement Report.'
+      : 'Something went wrong — please try again.';
+    bar.classList.add('show');
+  }
+
+  // Disable button on submit to prevent double-submit
+  document.getElementById('audit-form').addEventListener('submit', () => {
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+  });
+</script>
+
+</BaseLayout>
