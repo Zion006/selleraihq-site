@@ -2,112 +2,306 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout
-  title="Seller AI HQ, practical AI tools and workflows for online sellers"
-  description="Curated AI tools, tested workflows, and practical guides for marketplace sellers, small ecommerce brands, and product creators."
+  title="Seller AI HQ — AI tools built for Amazon FBA sellers"
+  description="Practical AI tools for Amazon FBA sellers. Reimbursement audits, listing optimization, inventory intelligence. Built to find money you're leaving on the table."
 >
-  <section class="hero">
-    <div class="hero-grid">
-      <div class="card">
-        <div class="pill">Built for ecommerce sellers, creators, and marketplace operators</div>
-        <h1>Use AI to sell better, faster, and with less wasted motion.</h1>
-        <p class="lead">
-          Seller AI HQ helps product-based businesses find useful AI tools for listings, visuals, content, and growth.
-          No bloated directory. No fake hype. Just practical stack decisions.
-        </p>
-        <div class="cta-row">
-          <a class="btn primary" href="/tools">Browse tool categories</a>
-          <a class="btn secondary" href="/guides">Read starter guides</a>
-        </div>
-        <div class="accent-line"></div>
-      </div>
-      <div class="card">
-        <div class="pill">Early positioning</div>
-        <div class="feature-list">
-          <div class="feature">
-            <strong>Curated tool stack</strong>
-            <span class="mini">We focus on tools sellers can actually use for listings, images, and content workflows.</span>
-          </div>
-          <div class="feature">
-            <strong>Search-first content</strong>
-            <span class="mini">The site is being built around high-intent pages that can attract organic traffic and future affiliate revenue.</span>
-          </div>
-          <div class="feature">
-            <strong>Future AI advisor layer</strong>
-            <span class="mini">Later, this becomes a smarter recommendation engine, not just a static content site.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+<style>
+  /* ── HERO ── */
+  .hero { padding: 64px 0 32px; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+    color: var(--accent-3); text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block; width: 24px; height: 2px;
+    background: var(--accent-3); border-radius: 2px;
+  }
+  .hero h1 {
+    font-size: clamp(44px, 7vw, 80px); line-height: 0.95;
+    margin-bottom: 20px; letter-spacing: -0.04em;
+  }
+  .hero h1 span {
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 50%, var(--accent-3) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-lead { font-size: 18px; color: var(--muted); max-width: 560px;
+               line-height: 1.6; margin-bottom: 32px; }
+  .hero-cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 48px; }
 
-  <section class="section">
-    <div class="trust">
-      <div class="card"><strong>Live domain</strong><div class="mini">selleraihq.com is active and deployed.</div></div>
-      <div class="card"><strong>Brand handle secured</strong><div class="mini">@selleraihq is already taken and aligned.</div></div>
-      <div class="card"><strong>SEO structure started</strong><div class="mini">Core pages and content lanes are already in place.</div></div>
-      <div class="card"><strong>Built to expand</strong><div class="mini">The brand can scale beyond one marketplace.</div></div>
-    </div>
-  </section>
+  /* ── LIVE BADGE ── */
+  .live-dot {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 600; color: var(--accent-3);
+    background: rgba(41,211,161,0.1); border: 1px solid rgba(41,211,161,0.25);
+    padding: 4px 10px; border-radius: 999px;
+  }
+  .live-dot::before {
+    content: ''; display: block; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent-3);
+    box-shadow: 0 0 0 2px rgba(41,211,161,0.3);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 2px rgba(41,211,161,0.3); }
+    50% { box-shadow: 0 0 0 5px rgba(41,211,161,0.1); }
+  }
 
-  <section class="section" id="tools">
-    <h2>Start with the three highest-value categories</h2>
-    <p class="top">These are the categories most likely to matter to sellers early and convert into monetizable interest later.</p>
-    <div class="grid-3">
-      <div class="card">
-        <div class="pill">Listings</div>
-        <h3>Copy and SEO</h3>
-        <p class="mini">Title generators, description tools, keyword research, and listing optimization workflows.</p>
-      </div>
-      <div class="card">
-        <div class="pill">Creative</div>
-        <h3>Images and mockups</h3>
-        <p class="mini">Product visuals, cleanup tools, mockup builders, scene generation, and image enhancement.</p>
-      </div>
-      <div class="card">
-        <div class="pill">Growth</div>
-        <h3>Content and marketing</h3>
-        <p class="mini">Email helpers, post generation, short-form content workflows, and lightweight campaign support.</p>
-      </div>
-    </div>
-  </section>
+  /* ── HERO TOOL CARD ── */
+  .hero-tool {
+    background: linear-gradient(145deg, rgba(110,168,255,0.07), rgba(141,107,255,0.05));
+    border: 1px solid rgba(110,168,255,0.2); border-radius: 28px; padding: 32px;
+    position: relative; overflow: hidden;
+  }
+  .hero-tool::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(110,168,255,0.12), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tool-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+                   color: var(--accent); font-weight: 700; margin-bottom: 8px; }
+  .hero-tool h2 { font-size: 22px; margin-bottom: 8px; }
+  .hero-tool p  { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+  .metric-row { display: flex; gap: 20px; margin-bottom: 20px; }
+  .metric strong { display: block; font-size: 22px; font-weight: 800;
+                   color: var(--accent-3); line-height: 1; margin-bottom: 2px; }
+  .metric span { font-size: 11px; color: var(--muted); }
 
-  <section class="section" id="guides">
-    <div class="grid-2">
-      <div class="card">
-        <div class="pill">Money pages coming next</div>
-        <h3>Pages that can actually make money</h3>
-        <ul class="mini" style="padding-left:18px; margin: 12px 0 0;">
-          <li>Best AI tools for sellers in 2026</li>
-          <li>Best AI image tools for product sellers</li>
-          <li>Best AI copy tools for listings and SEO</li>
-          <li>Best low-cost AI stack for ecommerce sellers</li>
-        </ul>
-      </div>
-      <div class="card">
-        <div class="pill">Authority layer</div>
-        <h3>Guides that build trust</h3>
-        <ul class="mini" style="padding-left:18px; margin: 12px 0 0;">
-          <li>How to use AI for product listings without sounding robotic</li>
-          <li>How to improve product visuals with AI</li>
-          <li>How solo sellers can use AI without adding tool chaos</li>
-          <li>What AI is actually worth paying for as a seller</li>
-        </ul>
-      </div>
-    </div>
-  </section>
+  /* ── TOOLS GRID ── */
+  .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .tool-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 22px; padding: 24px;
+    transition: border-color 0.2s, transform 0.15s;
+    position: relative;
+  }
+  .tool-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .tool-card.live { border-color: rgba(110,168,255,0.2); }
+  .tool-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+  .tool-card h3 { font-size: 17px; margin-bottom: 6px; }
+  .tool-card p { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 16px; }
+  .tool-card-footer { display: flex; align-items: center; justify-content: space-between; }
+  .tag-soon {
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--muted); background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px;
+  }
+  .btn-sm {
+    font-size: 12px; font-weight: 700; padding: 8px 14px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white;
+    transition: opacity 0.15s;
+  }
+  .btn-sm:hover { opacity: 0.85; }
 
-  <section class="section" id="stack">
-    <div class="card">
-      <div class="pill">Why this can work</div>
-      <h2>This is being built as a lean, monetizable media asset.</h2>
-      <p class="top">
-        The short-term goal is simple, build a site that looks trustworthy enough to keep visitors, structured enough to rank,
-        and focused enough to convert attention into affiliate clicks, partnerships, and later AI-assisted recommendations.
-      </p>
-      <div class="cta-row">
-        <a class="btn primary" href="/about">Why this project exists</a>
-        <a class="btn secondary" href="https://x.com/selleraihq" target="_blank" rel="noreferrer">Follow the build on X</a>
+  /* ── HOW IT WORKS ── */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+  .step { padding: 0 20px; position: relative; }
+  .step + .step::before {
+    content: '→'; position: absolute; left: -4px; top: 8px;
+    color: var(--border-strong); font-size: 18px;
+  }
+  .step-n { font-size: 11px; font-weight: 700; color: var(--accent);
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .step h4 { font-size: 15px; margin-bottom: 5px; }
+  .step p  { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* ── SOCIAL PROOF ── */
+  .proof-bar {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--border); border-radius: 18px; overflow: hidden;
+  }
+  .proof-item {
+    background: var(--panel); padding: 20px 18px; text-align: center;
+  }
+  .proof-item strong { display: block; font-size: 26px; font-weight: 800;
+                       background: linear-gradient(90deg, var(--accent), var(--accent-2));
+                       -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .proof-item span { font-size: 12px; color: var(--muted); }
+
+  /* ── CTA BANNER ── */
+  .cta-banner {
+    background: linear-gradient(135deg, rgba(110,168,255,0.1), rgba(141,107,255,0.08));
+    border: 1px solid rgba(110,168,255,0.2); border-radius: 28px;
+    padding: 48px; text-align: center; margin: 32px 0 64px;
+  }
+  .cta-banner h2 { font-size: clamp(26px, 4vw, 40px); margin-bottom: 12px; }
+  .cta-banner p  { color: var(--muted); font-size: 16px; max-width: 480px;
+                   margin: 0 auto 28px; line-height: 1.6; }
+
+  @media (max-width: 980px) {
+    .tools-grid, .steps, .proof-bar { grid-template-columns: 1fr; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .step + .step::before { display: none; }
+  }
+</style>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Built for Amazon FBA sellers</div>
+  <h1>Stop leaving<br><span>Amazon money</span><br>on the table.</h1>
+  <p class="hero-lead">
+    SellerAIHQ builds focused AI tools that find and recover revenue
+    FBA sellers don't know they're losing.
+    No bloat. No dashboards. Just results.
+  </p>
+  <div class="hero-cta-row">
+    <a class="btn primary" href="/fba-audit">Try FBA Reimbursement Audit →</a>
+    <a class="btn secondary" href="#tools">See all tools</a>
+  </div>
+
+  <!-- Featured tool -->
+  <div class="hero-tool">
+    <div class="hero-tool-tag">Featured tool · Live now</div>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px">
+      <h2 style="margin:0">FBA Underpaid Reimbursement Audit</h2>
+      <span class="live-dot">Live</span>
+    </div>
+    <p>Amazon changed their reimbursement policy in March 2025. If your sourcing costs weren't uploaded correctly, Amazon may have underpaid you for lost or damaged inventory — and you have 60 days to dispute each case.</p>
+    <div class="metric-row">
+      <div class="metric"><strong>60d</strong><span>window per reimbursement</span></div>
+      <div class="metric"><strong>24–48h</strong><span>diagnostic turnaround</span></div>
+      <div class="metric"><strong>Free</strong><span>diagnostic · $299 full audit</span></div>
+    </div>
+    <a class="btn primary" href="/fba-audit">Run free diagnostic →</a>
+  </div>
+</section>
+
+<!-- ALL TOOLS -->
+<section class="section" id="tools">
+  <h2>Tools</h2>
+  <p class="top" style="margin-bottom:22px">Each tool targets one specific revenue leak. Start with what costs you the most.</p>
+
+  <div class="tools-grid">
+
+    <!-- LIVE -->
+    <div class="tool-card live">
+      <span class="tool-icon">🔍</span>
+      <h3>FBA Reimbursement Audit</h3>
+      <p>Checks whether Amazon underpaid your lost/damaged inventory reimbursements after the March 2025 policy change. Calculates delta, flags deadlines, prepares evidence pack.</p>
+      <div class="tool-card-footer">
+        <span class="live-dot">Live</span>
+        <a class="btn-sm" href="/fba-audit">Try Free →</a>
       </div>
     </div>
-  </section>
+
+    <!-- COMING SOON -->
+    <div class="tool-card">
+      <span class="tool-icon">📦</span>
+      <h3>Sourcing Cost Uploader</h3>
+      <p>Bulk-upload your FNSKU sourcing costs to Manage Your Sourcing Cost before the next reimbursement event. Prevents future underpayments at the source.</p>
+      <div class="tool-card-footer">
+        <span class="tag-soon">Coming soon</span>
+        <a class="btn-sm" style="background:rgba(255,255,255,0.05);color:var(--muted);border:1px solid var(--border)" href="#waitlist">Get notified</a>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-icon">📋</span>
+      <h3>Listing Audit</h3>
+      <p>Scans your active FBA listings for suppression risks, keyword gaps, and content score issues. Flags what's costing you ranking before Amazon does.</p>
+      <div class="tool-card-footer">
+        <span class="tag-soon">Coming soon</span>
+        <a class="btn-sm" style="background:rgba(255,255,255,0.05);color:var(--muted);border:1px solid var(--border)" href="#waitlist">Get notified</a>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-icon">💰</span>
+      <h3>FBA Fee Checker</h3>
+      <p>Compares Amazon's calculated FBA fees against your actual product dimensions and weight. Finds misclassified SKUs that are costing you extra every shipment.</p>
+      <div class="tool-card-footer">
+        <span class="tag-soon">Coming soon</span>
+        <a class="btn-sm" style="background:rgba(255,255,255,0.05);color:var(--muted);border:1px solid var(--border)" href="#waitlist">Get notified</a>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-icon">🏷️</span>
+      <h3>PPC Waste Finder</h3>
+      <p>Pulls your Sponsored Products data and identifies bleeding search terms, cannibalizing campaigns, and bids that haven't converted in 90 days.</p>
+      <div class="tool-card-footer">
+        <span class="tag-soon">Coming soon</span>
+        <a class="btn-sm" style="background:rgba(255,255,255,0.05);color:var(--muted);border:1px solid var(--border)" href="#waitlist">Get notified</a>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <span class="tool-icon">🔄</span>
+      <h3>Return Rate Analyzer</h3>
+      <p>Breaks down your return reasons by ASIN and maps them to listing, product, or fulfillment issues. Find what's driving returns before Amazon penalizes you.</p>
+      <div class="tool-card-footer">
+        <span class="tag-soon">Coming soon</span>
+        <a class="btn-sm" style="background:rgba(255,255,255,0.05);color:var(--muted);border:1px solid var(--border)" href="#waitlist">Get notified</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+  <h2>How SellerAIHQ works</h2>
+  <p class="top" style="margin-bottom:24px">Each tool follows the same pattern — upload data, get findings, take action.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">Step 01</div>
+      <h4>Pick a tool</h4>
+      <p>Each tool targets one specific problem. Start with the one most relevant to your account right now.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">Step 02</div>
+      <h4>Upload your data</h4>
+      <p>Export the relevant report from Seller Central — usually 2 minutes of work.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">Step 03</div>
+      <h4>Get findings</h4>
+      <p>We return a clear report: what's wrong, how much it's costing you, how confident we are.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">Step 04</div>
+      <h4>Take action</h4>
+      <p>Each finding includes an action — claim text, fix instructions, or evidence pack ready to submit.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section">
+  <div class="proof-bar">
+    <div class="proof-item">
+      <strong>Mar 2025</strong>
+      <span>Amazon reimbursement policy change</span>
+    </div>
+    <div class="proof-item">
+      <strong>60 days</strong>
+      <span>Window to dispute each reimbursement</span>
+    </div>
+    <div class="proof-item">
+      <strong>$299</strong>
+      <span>Full audit + evidence pack</span>
+    </div>
+    <div class="proof-item">
+      <strong>24–48h</strong>
+      <span>Free diagnostic turnaround</span>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="section" id="waitlist">
+  <div class="cta-banner">
+    <div class="pill" style="justify-content:center;margin-bottom:14px">5 tools in development</div>
+    <h2>Get early access to new tools</h2>
+    <p>We're building more tools that find revenue leaks specific to FBA sellers. Get notified when each one launches.</p>
+    <a class="btn primary" style="font-size:15px;padding:14px 24px"
+       href="mailto:zionbot@agentmail.to?subject=Waitlist&body=Hey, I'd like early access to new SellerAIHQ tools.%0A%0AMy store:%0AMain marketplace:%0ABiggest pain point:">
+      Join Early Access →
+    </a>
+    <p style="font-size:12px;color:var(--muted);margin-top:10px">No spam. One email per tool launch.</p>
+  </div>
+</section>
+
 </BaseLayout>
