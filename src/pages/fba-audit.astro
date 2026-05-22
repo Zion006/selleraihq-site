@@ -1,0 +1,246 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+  title="FBA Reimbursement Audit — SellerAIHQ"
+  description="We check whether Amazon underpaid your FBA lost or damaged inventory reimbursements. Invoice-backed sourcing cost audit with evidence pack for re-evaluation."
+>
+
+<style>
+  .audit-hero { padding: 52px 0 28px; }
+  .audit-hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 22px; }
+
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .badge { display:inline-flex; align-items:center; gap:6px; font-size:12px;
+           background: rgba(110,168,255,0.08); border:1px solid rgba(110,168,255,0.18);
+           padding: 5px 10px; border-radius: 999px; color: #d0e4ff; }
+
+  .price-card { background: linear-gradient(145deg, rgba(110,168,255,0.08), rgba(141,107,255,0.06));
+                border: 1px solid rgba(110,168,255,0.2); border-radius: 24px; padding: 28px; }
+  .price-main { font-size: 38px; font-weight: 800; margin: 8px 0 4px;
+                background: linear-gradient(90deg, var(--accent), var(--accent-2));
+                -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .price-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+  .check-list { list-style: none; padding: 0; display: grid; gap: 9px; margin-bottom: 20px; }
+  .check-list li { display: flex; gap: 10px; align-items: flex-start;
+                   font-size: 14px; color: var(--muted); }
+  .check-list li::before { content: "✓"; color: var(--accent-3);
+                            font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  .steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+  .step-card { background: var(--panel); border: 1px solid var(--border);
+               border-radius: 20px; padding: 22px; }
+  .step-num { width: 32px; height: 32px; border-radius: 50%;
+              background: linear-gradient(135deg, var(--accent), var(--accent-2));
+              display: flex; align-items: center; justify-content: center;
+              font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+  .step-card h3 { font-size: 16px; margin-bottom: 6px; }
+  .step-card p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  .outcome-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+  .outcome-item { background: var(--panel); border: 1px solid var(--border);
+                  border-radius: 18px; padding: 18px 20px; }
+  .outcome-item strong { display: block; margin-bottom: 4px; font-size: 15px; }
+  .outcome-item span { font-size: 13px; color: var(--muted); }
+
+  .faq-list { display: grid; gap: 12px; }
+  .faq-item { background: var(--panel); border: 1px solid var(--border);
+              border-radius: 18px; padding: 20px 22px; }
+  .faq-item strong { display: block; margin-bottom: 6px; font-size: 15px; }
+  .faq-item p { font-size: 14px; color: var(--muted); line-height: 1.6; margin: 0; }
+
+  .cta-section { padding: 32px 0 64px; }
+  .cta-card { background: linear-gradient(135deg, rgba(110,168,255,0.1), rgba(141,107,255,0.08));
+              border: 1px solid rgba(110,168,255,0.2); border-radius: 28px; padding: 40px;
+              text-align: center; }
+  .cta-card h2 { font-size: clamp(24px, 3.5vw, 36px); margin-bottom: 12px; }
+  .cta-card p { color: var(--muted); max-width: 520px; margin: 0 auto 28px;
+                font-size: 16px; line-height: 1.6; }
+
+  .urgency-bar { background: rgba(255,68,68,0.1); border: 1px solid rgba(255,68,68,0.25);
+                 border-radius: 12px; padding: 12px 16px; margin-bottom: 20px;
+                 font-size: 13px; color: #ffb3b3; text-align: center; }
+
+  @media (max-width: 980px) {
+    .audit-hero-grid, .steps-grid, .outcome-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<!-- HERO -->
+<section class="audit-hero">
+  <div class="audit-hero-grid">
+    <div class="card">
+      <div class="badge-row">
+        <span class="badge">Amazon FBA</span>
+        <span class="badge">Lost &amp; Damaged Inventory</span>
+        <span class="badge">60-day re-evaluation window</span>
+      </div>
+      <h1>Did Amazon underpay your FBA reimbursements?</h1>
+      <p class="lead">
+        Since March 2025, Amazon ties reimbursement amounts to your uploaded sourcing cost.
+        If costs weren't set correctly — you may have been underpaid. We find the delta and prepare the evidence pack.
+      </p>
+      <div class="cta-row">
+        <a class="btn primary" href="#audit-form">Get Free Diagnostic →</a>
+        <a class="btn secondary" href="#how-it-works">How it works</a>
+      </div>
+      <div class="accent-line" style="margin-top:24px"></div>
+      <div class="stats">
+        <div class="stat"><strong>60d</strong>Window to dispute each reimbursement</div>
+        <div class="stat"><strong>Mar 2025</strong>Amazon policy change date</div>
+        <div class="stat"><strong>24–48h</strong>Diagnostic turnaround</div>
+      </div>
+    </div>
+
+    <div class="price-card">
+      <div class="pill">Free diagnostic included</div>
+      <div class="price-main">$299</div>
+      <div class="price-sub">Full audit + evidence pack · or free diagnostic first</div>
+      <ul class="check-list">
+        <li>Last 60–120 days of FBA reimbursements reviewed</li>
+        <li>Matched against your invoice-backed sourcing cost</li>
+        <li>Underpayment delta calculated per case</li>
+        <li>60-day deadline tracked per reimbursement</li>
+        <li>Evidence pack ready to submit to Amazon</li>
+        <li>Claim text written for each case</li>
+      </ul>
+      <a class="btn primary" style="width:100%;justify-content:center" href="#audit-form">
+        Start Free Diagnostic
+      </a>
+      <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:10px">
+        + 15% success fee on recovered underpayment
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how-it-works">
+  <h2>How the audit works</h2>
+  <p class="top" style="margin-bottom:20px">Three steps from your files to a ready-to-submit evidence pack.</p>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h3>You send two files</h3>
+      <p>Your Amazon FBA Reimbursement Report and supplier invoices showing unit cost per SKU.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h3>We run the audit</h3>
+      <p>We match each reimbursement to your invoice cost, calculate the underpayment delta, and flag deadline risk.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h3>You get the evidence pack</h3>
+      <p>PDF report with findings, claim text per case, invoice references, and deadline priority.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<section class="section">
+  <h2>What's in the report</h2>
+  <p class="top" style="margin-bottom:20px">Everything you need to submit a re-evaluation claim to Amazon.</p>
+  <div class="outcome-grid">
+    <div class="outcome-item">
+      <strong>Underpayment delta per case</strong>
+      <span>Exact dollar difference between what Amazon paid and what your invoice cost supports.</span>
+    </div>
+    <div class="outcome-item">
+      <strong>Deadline risk table</strong>
+      <span>Every reimbursement flagged as Open, Urgent (&lt;14 days), Critical (&lt;7 days), or Expired.</span>
+    </div>
+    <div class="outcome-item">
+      <strong>Invoice-backed evidence</strong>
+      <span>Each case linked to your supplier invoice with unit cost reference.</span>
+    </div>
+    <div class="outcome-item">
+      <strong>Ready-to-submit claim text</strong>
+      <span>Pre-written re-evaluation message for each underpaid reimbursement.</span>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="section">
+  <div class="grid-2">
+    <div class="card">
+      <div class="pill">Right fit</div>
+      <h3>This audit works if you</h3>
+      <ul class="check-list" style="margin-top:12px">
+        <li>Sell primarily through FBA (US, UK, EU, CA)</li>
+        <li>Have received lost/damaged reimbursements since March 2025</li>
+        <li>Have supplier or manufacturer invoices with unit cost</li>
+        <li>Run private label, wholesale, or brand-owner model</li>
+        <li>Do $30k+/month in Amazon revenue</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="pill">Not a fit</div>
+      <h3>This audit is not for</h3>
+      <ul class="check-list" style="margin-top:12px">
+        <li style="color:var(--muted)">Retail arbitrage sellers without consistent invoices</li>
+        <li style="color:var(--muted)">Sellers with no FBA lost/damaged reimbursements</li>
+        <li style="color:var(--muted)">Sellers under $10k/month GMV</li>
+        <li style="color:var(--muted)">FBM-only sellers</li>
+      </ul>
+      <p class="mini" style="margin-top:14px">
+        Not sure? Submit for a free diagnostic — we'll tell you if there's anything worth pursuing.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+  <h2>Common questions</h2>
+  <div class="faq-list" style="margin-top:20px">
+    <div class="faq-item">
+      <strong>Why would Amazon have underpaid my reimbursement?</strong>
+      <p>Amazon updated their FBA reimbursement policy in March 2025 to base payouts on your uploaded sourcing cost in Manage Your Sourcing Cost. If you hadn't uploaded costs, or uploaded them after the reimbursement was issued, Amazon used their own estimated value — which is almost always lower than your real cost.</p>
+    </div>
+    <div class="faq-item">
+      <strong>What's the 60-day window?</strong>
+      <p>Amazon allows sellers to request a re-evaluation of a reimbursement amount within 60 days of the payout date. After that, the window expires and the amount cannot be disputed. Our audit flags each case by deadline urgency.</p>
+    </div>
+    <div class="faq-item">
+      <strong>What files do I need to provide?</strong>
+      <p>Two files: (1) Your FBA Reimbursement Report — downloadable from Seller Central under Reports → Fulfillment → Reimbursements. (2) Supplier invoices showing unit cost per SKU or FNSKU in CSV or Excel format.</p>
+    </div>
+    <div class="faq-item">
+      <strong>Is the delta amount guaranteed?</strong>
+      <p>No. The delta is a claim estimate based on your invoice-backed sourcing cost. Amazon's final re-evaluation may differ depending on what costs they accept. We clearly label each case by confidence level (High / Medium) based on evidence quality.</p>
+    </div>
+    <div class="faq-item">
+      <strong>How is this different from GETIDA or Refund Genie?</strong>
+      <p>Those tools find missing reimbursements — cases Amazon never paid. We audit reimbursements that were already paid but at the wrong amount. It's a different layer that most tools don't cover.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / FORM -->
+<section class="cta-section" id="audit-form">
+  <div class="cta-card">
+    <div class="urgency-bar">
+      ⚠ Each reimbursement has a 60-day re-evaluation window. Older cases expire daily.
+    </div>
+    <h2>Start your free diagnostic</h2>
+    <p>
+      Send your FBA Reimbursement Report and supplier invoices to our audit inbox.
+      We'll check your last 10 reimbursement transactions at no cost and tell you
+      if there's anything worth pursuing.
+    </p>
+    <a class="btn primary" style="font-size:16px;padding:16px 28px"
+       href="mailto:zionbot@agentmail.to?subject=Audit: My Store Name&body=Hi, I'd like a free FBA reimbursement diagnostic.%0A%0APlease attach:%0A1. FBA Reimbursement Report (from Seller Central → Reports → Fulfillment → Reimbursements)%0A2. Supplier invoices with unit cost per SKU%0A%0AStore name:%0AMarketplace (US/UK/EU/CA):%0AMonthly GMV (approx):%0ANumber of SKUs:">
+      Email Files for Free Diagnostic →
+    </a>
+    <p style="font-size:12px;color:var(--muted);margin-top:14px">
+      Send to: <strong style="color:var(--accent)">zionbot@agentmail.to</strong> ·
+      Subject: <strong style="color:var(--accent)">Audit: Your Store Name</strong> ·
+      Results in 24–48 hours
+    </p>
+  </div>
+</section>
+
+</BaseLayout>
