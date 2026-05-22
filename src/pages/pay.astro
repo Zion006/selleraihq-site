@@ -1,0 +1,243 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const USDT_ADDRESS = 'TKuLDawGHSF1DMkvKHeG5kbz71qpSfBx9T';
+const QR_URL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${USDT_ADDRESS}&bgcolor=111a33&color=6ea8ff&margin=16`;
+---
+<BaseLayout
+  title="Pay for FBA Audit — SellerAIHQ"
+  description="Pay $299 for the full FBA Reimbursement Audit. Pay with USDT (TRC20) or request an invoice."
+>
+<style>
+  .pay-hero { padding: 52px 0 20px; text-align: center; }
+  .pay-hero h1 { font-size: clamp(30px,5vw,52px); margin-bottom: 10px; }
+  .pay-hero p  { color: var(--muted); font-size: 16px; max-width: 500px; margin: 0 auto; }
+
+  .pay-grid {
+    display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 20px;
+    max-width: 860px; margin: 32px auto 80px;
+  }
+
+  /* Left — USDT card */
+  .usdt-card {
+    background: var(--panel); border: 1px solid rgba(110,168,255,.2);
+    border-radius: 28px; padding: 32px;
+  }
+  .usdt-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(41,211,161,.1); border: 1px solid rgba(41,211,161,.2);
+    color: var(--accent-3); font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .8px;
+    padding: 5px 12px; border-radius: 999px; margin-bottom: 18px;
+  }
+  .usdt-badge::before {
+    content:''; width:6px; height:6px; border-radius:50%;
+    background: var(--accent-3); animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 2px rgba(41,211,161,.3)} 50%{box-shadow:0 0 0 5px rgba(41,211,161,.08)} }
+
+  .price-big {
+    font-size: 52px; font-weight: 800; line-height: 1; margin-bottom: 4px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .price-note { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+  .qr-wrap {
+    display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;
+  }
+  .qr-img {
+    width: 120px; height: 120px; border-radius: 14px;
+    border: 1px solid var(--border); flex-shrink: 0;
+    background: var(--panel-strong);
+  }
+  .addr-block { flex: 1; }
+  .addr-label { font-size: 11px; font-weight: 700; text-transform: uppercase;
+                letter-spacing: .8px; color: var(--muted); margin-bottom: 8px; }
+  .addr-box {
+    background: rgba(255,255,255,.04); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 14px;
+    font-family: 'Courier New', monospace; font-size: 12px;
+    word-break: break-all; color: var(--accent-3); line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  .copy-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(110,168,255,.1); border: 1px solid rgba(110,168,255,.2);
+    color: var(--accent); font-size: 12px; font-weight: 700;
+    padding: 8px 14px; border-radius: 9px; cursor: pointer;
+    transition: background .15s; border: 1px solid rgba(110,168,255,.2);
+    width: fit-content;
+  }
+  .copy-btn:hover { background: rgba(110,168,255,.18); }
+  .copy-btn.copied { background: rgba(41,211,161,.1); color: var(--accent-3);
+                     border-color: rgba(41,211,161,.2); }
+
+  .network-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,68,68,.08); border: 1px solid rgba(255,68,68,.18);
+    color: #ff9999; font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 999px; margin-bottom: 20px;
+  }
+
+  .steps-list { display: grid; gap: 10px; }
+  .pay-step {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 14px; border-radius: 12px;
+    background: rgba(255,255,255,.03); border: 1px solid var(--border);
+  }
+  .pay-step-num {
+    width: 24px; height: 24px; border-radius: 8px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800;
+  }
+  .pay-step div { font-size: 13px; line-height: 1.5; }
+  .pay-step strong { display: block; margin-bottom: 2px; }
+  .pay-step span { color: var(--muted); }
+
+  /* Right — summary + invoice */
+  .summary-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 28px; padding: 28px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .summary-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .summary-list { list-style: none; padding: 0; display: grid; gap: 8px; }
+  .summary-list li {
+    display: flex; gap: 9px; align-items: flex-start;
+    font-size: 13px; color: var(--muted);
+  }
+  .summary-list li::before { content: "✓"; color: var(--accent-3); font-weight: 700; flex-shrink: 0; }
+
+  .divider { height: 1px; background: var(--border); }
+
+  .invoice-block { text-align: center; }
+  .invoice-block p { font-size: 13px; color: var(--muted); margin-bottom: 14px; line-height: 1.55; }
+
+  .free-diag {
+    background: rgba(110,168,255,.06); border: 1px solid rgba(110,168,255,.15);
+    border-radius: 16px; padding: 16px; text-align: center;
+  }
+  .free-diag p { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+
+  @media(max-width:760px){
+    .pay-grid { grid-template-columns: 1fr; }
+    .qr-wrap  { flex-direction: column; align-items: center; text-align: center; }
+  }
+</style>
+
+<section class="pay-hero">
+  <div class="pill" style="justify-content:center;margin-bottom:14px">Secure payment</div>
+  <h1>Pay for Full FBA Audit</h1>
+  <p>One-time payment · No subscription · Evidence pack delivered in 3–5 business days</p>
+</section>
+
+<div class="pay-grid">
+
+  <!-- LEFT: USDT -->
+  <div class="usdt-card">
+    <div class="usdt-badge">Recommended</div>
+    <div class="price-big">$299</div>
+    <div class="price-note">Full audit + evidence pack · + 15% success fee on recovered amount</div>
+
+    <div class="qr-wrap">
+      <img class="qr-img" src={QR_URL} alt="USDT TRC20 QR code" loading="lazy" />
+      <div class="addr-block">
+        <div class="addr-label">USDT · TRC20 network only</div>
+        <div class="addr-box" id="usdt-addr">{USDT_ADDRESS}</div>
+        <button class="copy-btn" id="copy-btn" onclick="copyAddr()">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          Copy address
+        </button>
+      </div>
+    </div>
+
+    <div class="network-pill">⚠ TRC20 network only — do not send via ERC20 or BEP20</div>
+
+    <div class="steps-list">
+      <div class="pay-step">
+        <div class="pay-step-num">1</div>
+        <div>
+          <strong>Send exactly $299 USDT</strong>
+          <span>Copy the address above. Use TRC20 network only.</span>
+        </div>
+      </div>
+      <div class="pay-step">
+        <div class="pay-step-num">2</div>
+        <div>
+          <strong>Email us the transaction hash</strong>
+          <span>Send TX ID to <a href="mailto:zionbot@agentmail.to" style="color:var(--accent)">zionbot@agentmail.to</a> with subject "Payment: [your store name]"</span>
+        </div>
+      </div>
+      <div class="pay-step">
+        <div class="pay-step-num">3</div>
+        <div>
+          <strong>Upload your files</strong>
+          <span>If you haven't yet — <a href="/audit" style="color:var(--accent)">submit your reimbursement report</a> and invoices.</span>
+        </div>
+      </div>
+      <div class="pay-step">
+        <div class="pay-step-num">4</div>
+        <div>
+          <strong>Receive your evidence pack</strong>
+          <span>Full findings report + claim text per case within 3–5 business days.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: summary + invoice -->
+  <div class="summary-card">
+    <div>
+      <div class="summary-title">What's included</div>
+      <ul class="summary-list">
+        <li>Last 60–120 days of reimbursements reviewed</li>
+        <li>Matched against your invoice-backed sourcing cost</li>
+        <li>Underpayment delta calculated per case</li>
+        <li>60-day deadline tracked per reimbursement</li>
+        <li>Evidence pack ready to submit to Amazon</li>
+        <li>Pre-written claim text for each case</li>
+        <li>Confidence level per case (High / Medium)</li>
+      </ul>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="invoice-block">
+      <p>Prefer to pay by invoice or wire transfer? We can accommodate B2B payments on request.</p>
+      <a class="btn secondary" style="font-size:13px;padding:10px 16px"
+         href="mailto:zionbot@agentmail.to?subject=Invoice Request&body=Hi, I'd like to pay by invoice for the FBA Reimbursement Audit.%0A%0AStore name:%0AMonthly GMV:%0ACountry:">
+        Request Invoice →
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="free-diag">
+      <p>Not sure yet? Start with the free diagnostic — we check your last 10 reimbursements at no cost.</p>
+      <a class="btn primary" href="/audit" style="font-size:13px;padding:10px 16px">
+        Run Free Diagnostic →
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function copyAddr() {
+    const addr = document.getElementById('usdt-addr').textContent.trim();
+    const btn  = document.getElementById('copy-btn');
+    navigator.clipboard.writeText(addr).then(() => {
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy address`;
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+</BaseLayout>
