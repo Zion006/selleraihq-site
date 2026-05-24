@@ -1,0 +1,7 @@
+{
+  "api_key":   "ВАШ_AGENTMAIL_API_KEY",
+  "inbox_id":  "zionbot@agentmail.to",
+  "auto_run":  true,
+  "min_delta": 10.0,
+  "days":      60
+}

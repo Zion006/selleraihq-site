@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+config.json
+seen_messages.json
+drop/
+data/reimbursements.csv
+data/cost_registry.csv
+output/findings_*.csv
+output/report_*.html
+output/report_*.pdf
+email_watcher.log
